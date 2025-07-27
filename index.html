@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Giải Thích Trực Quan: Tìm Số Chẵn & Lẻ</title>
+        <style>
+            :root {
+                --bg-color: #f4f4f8;
+                --card-bg: #ffffff;
+                --primary-color: #a5d8ff;
+                --accent-color: #ff6b6b;
+                --text-color: #333333;
+                --highlight-first: #50c878;
+                --highlight-middle: #808080;
+                --highlight-last-even: #4a86e8;
+                --highlight-last-odd: #ff9a4d; /* Màu mới cho số lẻ */
+            }
+            body {
+                font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+                    "Helvetica Neue", sans-serif;
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                margin: 0;
+                padding: 2rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .container {
+                width: 100%;
+                max-width: 1400px;
+            }
+            h1.main-title {
+                color: var(--accent-color);
+                text-align: center;
+                margin-bottom: 1rem;
+            }
+            h1.main-title + p {
+                text-align: center;
+                margin-top: -1rem;
+                margin-bottom: 2rem;
+                font-size: 1.1rem;
+            }
+            .section-title {
+                text-align: center;
+                font-size: 2rem;
+                margin: 2.5rem 0 1.5rem 0;
+                color: var(--text-color);
+            }
+            .controls {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 1rem;
+                background-color: var(--card-bg);
+                padding: 1.5rem;
+                border-radius: 12px;
+                margin-bottom: 2rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                border: 1px solid #e0e0e0;
+            }
+            .controls label {
+                font-size: 1.1rem;
+                font-weight: 500;
+            }
+            .controls select {
+                padding: 0.5rem 1rem;
+                font-size: 1.1rem;
+                border-radius: 8px;
+                border: 1px solid var(--primary-color);
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                cursor: pointer;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                gap: 1.5rem;
+            }
+            .card {
+                background-color: var(--card-bg);
+                border-radius: 12px;
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                border-left: 5px solid var(--primary-color);
+                transition: transform 0.2s ease-in-out;
+                border: 1px solid #e0e0e0;
+            }
+            .card:hover {
+                transform: translateY(-5px);
+            }
+            .card h3 {
+                margin-top: 0;
+                color: #333;
+                border-bottom: 2px solid var(--primary-color);
+                padding-bottom: 0.5rem;
+            }
+            .card .subtitle {
+                font-style: italic;
+                color: var(--highlight-first);
+                margin-top: -0.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .number-display {
+                font-size: 2.5rem;
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 1rem;
+                padding: 1rem;
+                background-color: #f0f0f0;
+                border-radius: 8px;
+                letter-spacing: 5px;
+                min-height: 50px;
+                border: 1px solid #e0e0e0;
+            }
+            .number-display span {
+                display: inline-block;
+                transition: all 0.5s ease;
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            .number-display span.first {
+                color: var(--highlight-first);
+            }
+            .number-display span.middle {
+                color: var(--highlight-middle);
+            }
+            .number-display span.last-even {
+                color: var(--highlight-last-even);
+            }
+            .number-display span.last-odd {
+                color: var(--highlight-last-odd);
+            }
+            .explanation {
+                font-size: 0.95rem;
+                line-height: 1.6;
+                background-color: var(--primary-color);
+                color: #0f172a; /* Darker text on light blue */
+                padding: 1rem;
+                border-radius: 8px;
+                flex-grow: 1;
+            }
+
+            /* --- Mã Responsive cho điện thoại --- */
+            @media (max-width: 800px) {
+                body {
+                    padding: 1rem;
+                }
+                .grid {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                }
+                .controls {
+                    flex-direction: column;
+                    gap: 0.8rem;
+                    padding: 1rem;
+                }
+                h1.main-title {
+                    font-size: 1.8rem;
+                }
+                h1.main-title + p {
+                    margin-bottom: 1.5rem;
+                    font-size: 1rem;
+                }
+                .section-title {
+                    font-size: 1.6rem;
+                }
+                .card h3 {
+                    font-size: 1.3rem;
+                }
+                .number-display {
+                    font-size: 2rem;
+                    letter-spacing: 3px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="main-title">Giải Thích Nguyên Tắc Tìm Số Chẵn & Lẻ</h1>
+            <p>
+                Chọn số lượng chữ số để xem các quy tắc được áp dụng trực quan.
+            </p>
+
+            <div class="controls">
+                <label for="digit-count">Chọn số lượng chữ số:</label>
+                <select id="digit-count">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4" selected>4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+
+            <h2 class="section-title">🔢 Số Chẵn</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Số chẵn nhỏ nhất</h3>
+                    <p class="subtitle">Các chữ số có thể giống nhau</p>
+                    <div class="number-display" id="se-display"></div>
+                    <div class="explanation" id="se-explanation"></div>
+                </div>
+                <div class="card">
+                    <h3>Số chẵn nhỏ nhất</h3>
+                    <p class="subtitle">Các chữ số phải khác nhau</p>
+                    <div class="number-display" id="sedd-display"></div>
+                    <div class="explanation" id="sedd-explanation"></div>
+                </div>
+                <div class="card">
+                    <h3>Số chẵn lớn nhất</h3>
+                    <p class="subtitle">Các chữ số có thể giống nhau</p>
+                    <div class="number-display" id="le-display"></div>
+                    <div class="explanation" id="le-explanation"></div>
+                </div>
+                <div class="card">
+                    <h3>Số chẵn lớn nhất</h3>
+                    <p class="subtitle">Các chữ số phải khác nhau</p>
+                    <div class="number-display" id="ledd-display"></div>
+                    <div class="explanation" id="ledd-explanation"></div>
+                </div>
+            </div>
+
+            <h2 class="section-title">🔢 Số Lẻ</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Số lẻ nhỏ nhất</h3>
+                    <p class="subtitle">Các chữ số có thể giống nhau</p>
+                    <div class="number-display" id="so-display"></div>
+                    <div class="explanation" id="so-explanation"></div>
+                </div>
+                <div class="card">
+                    <h3>Số lẻ nhỏ nhất</h3>
+                    <p class="subtitle">Các chữ số phải khác nhau</p>
+                    <div class="number-display" id="sodd-display"></div>
+                    <div class="explanation" id="sodd-explanation"></div>
+                </div>
+                <div class="card">
+                    <h3>Số lẻ lớn nhất</h3>
+                    <p class="subtitle">Các chữ số có thể giống nhau</p>
+                    <div class="number-display" id="lo-display"></div>
+                    <div class="explanation" id="lo-explanation"></div>
+                </div>
+                <div class="card">
+                    <h3>Số lẻ lớn nhất</h3>
+                    <p class="subtitle">Các chữ số phải khác nhau</p>
+                    <div class="number-display" id="lodd-display"></div>
+                    <div class="explanation" id="lodd-explanation"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const digitSelect = document.getElementById("digit-count");
+
+                // --- HÀM TÌM SỐ CHẴN ---
+                function findSmallestEven(n) {
+                    if (n === 1)
+                        return {
+                            num: "0",
+                            exp: "Số chẵn nhỏ nhất có 1 chữ số là 0.",
+                        };
+                    const num = "1" + "0".repeat(n - 2) + "0";
+                    const exp = `• <strong>Chữ số đầu:</strong> 1 (nhỏ nhất khác 0).<br>• <strong>Các chữ số giữa:</strong> 0 (nhỏ nhất).<br>• <strong>Chữ số cuối:</strong> 0 (chẵn & nhỏ nhất).`;
+                    return { num, exp, type: "even" };
+                }
+                function findLargestEven(n) {
+                    if (n === 1)
+                        return {
+                            num: "8",
+                            exp: "Số chẵn lớn nhất có 1 chữ số là 8.",
+                        };
+                    const num = "9".repeat(n - 1) + "8";
+                    const exp = `• <strong>Các chữ số đầu:</strong> 9 (lớn nhất).<br>• <strong>Chữ số cuối:</strong> 8 (chẵn & lớn nhất).`;
+                    return { num, exp, type: "even" };
+                }
+                function findSmallestEvenDifferentDigits(n) {
+                    if (n === 1)
+                        return {
+                            num: "0",
+                            exp: "Số chẵn nhỏ nhất có 1 chữ số là 0.",
+                        };
+                    if (n > 10)
+                        return {
+                            num: "Không có",
+                            exp: "Không thể tạo số có > 10 chữ số khác nhau.",
+                        };
+                    let digits = [1];
+                    let used = { 1: true };
+                    for (let i = 0; i <= 9; i++) {
+                        if (digits.length < n - 1 && !used[i]) {
+                            digits.push(i);
+                            used[i] = true;
+                        }
+                    }
+                    let lastDigit = -1;
+                    for (let i = 8; i >= 0; i -= 2) {
+                        if (digits.includes(i)) continue;
+                        let tempDigits = [...digits];
+                        tempDigits.sort((a, b) => b - a);
+                        if (i < tempDigits[0]) {
+                            for (let k = 0; k < tempDigits.length; k++) {
+                                if (i < tempDigits[k]) {
+                                    let swapCand = -1;
+                                    for (
+                                        let j = tempDigits[k] + 1;
+                                        j <= 9;
+                                        j++
+                                    ) {
+                                        if (!used[j] && j % 2 !== 0) {
+                                            swapCand = j;
+                                            break;
+                                        }
+                                    }
+                                    if (swapCand !== -1) {
+                                        let idx = digits.indexOf(tempDigits[k]);
+                                        digits[idx] = swapCand;
+                                        used[tempDigits[k]] = false;
+                                        used[swapCand] = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (let i = 0; i <= 8; i += 2) {
+                        if (!used[i]) {
+                            lastDigit = i;
+                            break;
+                        }
+                    }
+                    if (lastDigit === -1) {
+                        for (let i = digits.length - 1; i >= 0; i--) {
+                            let currentDigit = digits[i];
+                            if (currentDigit % 2 !== 0) continue;
+                            for (let j = currentDigit + 1; j <= 9; j++) {
+                                if (!used[j]) {
+                                    digits[i] = j;
+                                    used[currentDigit] = false;
+                                    used[j] = true;
+                                    lastDigit = currentDigit;
+                                    break;
+                                }
+                            }
+                            if (lastDigit !== -1) break;
+                        }
+                    }
+                    const num = digits.join("") + lastDigit;
+                    const exp = `• <strong>Xây dựng từ trái sang phải</strong> với các chữ số nhỏ nhất có thể.<br>• <strong>Ưu tiên:</strong> 1, 0, 2, 3...<br>• <strong>Chữ số cuối:</strong> Phải là chữ số chẵn nhỏ nhất chưa được dùng.`;
+                    return { num, exp, type: "even" };
+                }
+                function findLargestEvenDifferentDigits(n) {
+                    if (n > 10)
+                        return {
+                            num: "Không có",
+                            exp: "Không thể tạo số có > 10 chữ số khác nhau.",
+                        };
+                    if (n === 1)
+                        return {
+                            num: "8",
+                            exp: "Số chẵn lớn nhất có 1 chữ số là 8.",
+                        };
+                    let digits = [];
+                    let used = {};
+                    for (let i = 9; i >= 0; i--) {
+                        if (digits.length < n - 1) {
+                            digits.push(i);
+                            used[i] = true;
+                        }
+                    }
+                    let lastDigit = -1;
+                    for (let i = 8; i >= 0; i -= 2) {
+                        if (!used[i]) {
+                            lastDigit = i;
+                            break;
+                        }
+                    }
+                    const num = digits.join("") + lastDigit;
+                    const exp = `• <strong>Xây dựng từ trái sang phải</strong> với các chữ số lớn nhất có thể.<br>• <strong>Ưu tiên:</strong> 9, 8, 7, 6...<br>• <strong>Chữ số cuối:</strong> Phải là chữ số chẵn lớn nhất chưa được dùng.`;
+                    return { num, exp, type: "even" };
+                }
+
+                // --- HÀM TÌM SỐ LẺ ---
+                function findSmallestOdd(n) {
+                    if (n === 1)
+                        return {
+                            num: "1",
+                            exp: "Số lẻ nhỏ nhất có 1 chữ số là 1.",
+                        };
+                    if (n === 2)
+                        return {
+                            num: "11",
+                            exp: "• Chữ số đầu: 1 (nhỏ nhất khác 0).<br>• Chữ số cuối: 1 (lẻ & nhỏ nhất).",
+                        };
+                    const num = "1" + "0".repeat(n - 2) + "1";
+                    const exp = `• <strong>Chữ số đầu:</strong> 1 (nhỏ nhất khác 0).<br>• <strong>Các chữ số giữa:</strong> 0 (nhỏ nhất).<br>• <strong>Chữ số cuối:</strong> 1 (lẻ & nhỏ nhất).`;
+                    return { num, exp, type: "odd" };
+                }
+                function findLargestOdd(n) {
+                    const num = "9".repeat(n);
+                    const exp = `• <strong>Tất cả chữ số:</strong> 9 (lớn nhất và là số lẻ).`;
+                    return { num, exp, type: "odd" };
+                }
+                function findSmallestOddDifferentDigits(n) {
+                    if (n > 10)
+                        return {
+                            num: "Không có",
+                            exp: "Không thể tạo số có > 10 chữ số khác nhau.",
+                        };
+                    if (n === 1)
+                        return {
+                            num: "1",
+                            exp: "Số lẻ nhỏ nhất có 1 chữ số là 1.",
+                        };
+                    let digits = [];
+                    let used = {};
+                    if (n > 0) {
+                        digits.push(1);
+                        used[1] = true;
+                    }
+                    for (let i = 0; i <= 9; i++) {
+                        if (digits.length < n - 1 && !used[i]) {
+                            digits.push(i);
+                            used[i] = true;
+                        }
+                    }
+                    let lastDigit = -1;
+                    for (let i = 9; i >= 1; i -= 2) {
+                        if (!used[i]) {
+                            lastDigit = i;
+                            break;
+                        }
+                    }
+                    if (lastDigit === -1) {
+                        let last = digits.pop();
+                        used[last] = false;
+                        lastDigit = last;
+                        for (let i = 0; i <= 9; i++) {
+                            if (!used[i] && digits.length < n - 1) {
+                                digits.push(i);
+                                used[i] = true;
+                            }
+                        }
+                    }
+                    const num = digits.join("") + lastDigit;
+                    const exp = `• <strong>Xây dựng từ trái sang phải</strong> với các chữ số nhỏ nhất có thể.<br>• <strong>Ưu tiên:</strong> 1, 0, 2, 3...<br>• <strong>Chữ số cuối:</strong> Phải là chữ số lẻ nhỏ nhất chưa được dùng.`;
+                    return { num, exp, type: "odd" };
+                }
+                function findLargestOddDifferentDigits(n) {
+                    if (n > 10)
+                        return {
+                            num: "Không có",
+                            exp: "Không thể tạo số có > 10 chữ số khác nhau.",
+                        };
+                    let digits = [];
+                    let used = {};
+                    for (let i = 9; i >= 0; i--) {
+                        if (digits.length < n - 1) {
+                            digits.push(i);
+                            used[i] = true;
+                        }
+                    }
+                    let lastDigit = -1;
+                    for (let i = 9; i >= 1; i -= 2) {
+                        if (!used[i]) {
+                            lastDigit = i;
+                            break;
+                        }
+                    }
+                    const num = digits.join("") + lastDigit;
+                    const exp = `• <strong>Xây dựng từ trái sang phải</strong> với các chữ số lớn nhất có thể.<br>• <strong>Ưu tiên:</strong> 9, 8, 7...<br>• <strong>Chữ số cuối:</strong> Phải là chữ số lẻ lớn nhất chưa được dùng.`;
+                    return { num, exp, type: "odd" };
+                }
+
+                // --- HÀM RENDER ---
+                function render() {
+                    const n = parseInt(digitSelect.value);
+                    const results = {
+                        se: findSmallestEven(n),
+                        sedd: findSmallestEvenDifferentDigits(n),
+                        le: findLargestEven(n),
+                        ledd: findLargestEvenDifferentDigits(n),
+                        so: findSmallestOdd(n),
+                        sodd: findSmallestOddDifferentDigits(n),
+                        lo: findLargestOdd(n),
+                        lodd: findLargestOddDifferentDigits(n),
+                    };
+
+                    for (const [key, value] of Object.entries(results)) {
+                        if (!value) continue;
+                        const displayEl = document.getElementById(
+                            `${key}-display`
+                        );
+                        const explanationEl = document.getElementById(
+                            `${key}-explanation`
+                        );
+                        displayEl.innerHTML = "";
+                        explanationEl.innerHTML = value.exp;
+
+                        value.num.split("").forEach((char, index) => {
+                            const span = document.createElement("span");
+                            span.textContent = char;
+
+                            if (index === 0) {
+                                span.className = "first";
+                            } else if (index === value.num.length - 1) {
+                                span.className =
+                                    value.type === "even"
+                                        ? "last-even"
+                                        : "last-odd";
+                            } else {
+                                span.className = "middle";
+                            }
+
+                            displayEl.appendChild(span);
+                            setTimeout(() => {
+                                span.style.opacity = "1";
+                                span.style.transform = "translateY(0)";
+                            }, 100 * (index + 1));
+                        });
+                    }
+                }
+                digitSelect.addEventListener("change", render);
+                render();
+            });
+        </script>
+    </body>
+</html>
