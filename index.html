@@ -5,21 +5,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Giải Thích Trực Quan: Tìm Số Chẵn & Lẻ</title>
         <style>
+            @import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&display=swap");
+
             :root {
-                --bg-color: #f4f4f8;
+                --font-main: "Baloo 2", cursive;
+                --bg-color: #fef8e7; /* Màu nền vàng kem */
                 --card-bg: #ffffff;
-                --primary-color: #a5d8ff;
-                --accent-color: #ff6b6b;
-                --text-color: #333333;
-                --highlight-first: #50c878;
-                --highlight-middle: #808080;
-                --highlight-last-even: #4a86e8;
-                --highlight-last-odd: #ff9a4d; /* Màu mới cho số lẻ */
+                --controls-bg: #fff3cd; /* Màu vàng nhạt cho bảng điều khiển */
+                --primary-color: #82ccdd; /* Màu xanh ngọc */
+                --accent-color: #ff8080; /* Màu hồng cam */
+                --text-color: #594545; /* Màu nâu sẫm */
+                --highlight-first: #20a39e; /* Màu xanh lá cây đậm */
+                --highlight-middle: #8d93ab; /* Màu xám xanh */
+                --highlight-last-even: #7e57c2; /* Màu tím */
+                --highlight-last-odd: #ff9a4d; /* Màu cam */
             }
+
             body {
-                font-family: system-ui, -apple-system, BlinkMacSystemFont,
-                    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-                    "Helvetica Neue", sans-serif;
+                font-family: var(--font-main);
                 background-color: var(--bg-color);
                 color: var(--text-color);
                 margin: 0;
@@ -28,121 +31,161 @@
                 flex-direction: column;
                 align-items: center;
             }
+
             .container {
                 width: 100%;
                 max-width: 1400px;
             }
+
             h1.main-title {
                 color: var(--accent-color);
                 text-align: center;
-                margin-bottom: 1rem;
+                font-size: 3rem;
+                text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
             }
+
             h1.main-title + p {
                 text-align: center;
-                margin-top: -1rem;
+                margin-top: -1.5rem;
                 margin-bottom: 2rem;
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
+
             .section-title {
                 text-align: center;
-                font-size: 2rem;
+                font-size: 2.2rem;
                 margin: 2.5rem 0 1.5rem 0;
                 color: var(--text-color);
+                background-color: var(--primary-color);
+                color: white;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                display: inline-block;
+                box-shadow: 0 4px 0px #5f9ea3;
+                transform: rotate(-1deg);
             }
+
+            /* Căn giữa cho section-title */
+            div:has(> .section-title) {
+                text-align: center;
+            }
+
             .controls {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 gap: 1rem;
-                background-color: var(--card-bg);
+                background-color: var(--controls-bg);
                 padding: 1.5rem;
-                border-radius: 12px;
+                border-radius: 25px;
                 margin-bottom: 2rem;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                border: 1px solid #e0e0e0;
+                border: 3px solid #f9e4a9;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             }
+
             .controls label {
-                font-size: 1.1rem;
-                font-weight: 500;
+                font-size: 1.3rem;
+                font-weight: 700;
             }
+
             .controls select {
                 padding: 0.5rem 1rem;
-                font-size: 1.1rem;
-                border-radius: 8px;
-                border: 1px solid var(--primary-color);
-                background-color: var(--bg-color);
+                font-size: 1.2rem;
+                border-radius: 15px;
+                border: 2px solid var(--accent-color);
+                background-color: #fff;
+                font-family: var(--font-main);
                 color: var(--text-color);
                 cursor: pointer;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
             }
+
             .grid {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-                gap: 1.5rem;
+                gap: 2rem;
             }
+
             .card {
                 background-color: var(--card-bg);
-                border-radius: 12px;
+                border-radius: 25px;
                 padding: 1.5rem;
                 display: flex;
                 flex-direction: column;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                border-left: 5px solid var(--primary-color);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                border: 2px solid #eee;
+                border-bottom: 8px solid var(--primary-color);
                 transition: transform 0.2s ease-in-out;
-                border: 1px solid #e0e0e0;
             }
+
             .card:hover {
-                transform: translateY(-5px);
+                transform: translateY(-8px) rotate(1deg);
             }
+
             .card h3 {
                 margin-top: 0;
-                color: #333;
-                border-bottom: 2px solid var(--primary-color);
+                color: var(--text-color);
+                border-bottom: 3px dashed var(--primary-color);
                 padding-bottom: 0.5rem;
+                text-align: center;
+                font-size: 1.5rem;
             }
+
             .card .subtitle {
                 font-style: italic;
-                color: var(--highlight-first);
+                color: var(--accent-color);
                 margin-top: -0.5rem;
                 margin-bottom: 1.5rem;
+                text-align: center;
+                font-weight: 500;
             }
+
             .number-display {
-                font-size: 2.5rem;
-                font-weight: bold;
+                font-size: 3rem;
+                font-weight: 700;
                 text-align: center;
                 margin-bottom: 1rem;
                 padding: 1rem;
-                background-color: #f0f0f0;
-                border-radius: 8px;
+                background-color: #f0f8ff;
+                border-radius: 20px;
                 letter-spacing: 5px;
                 min-height: 50px;
-                border: 1px solid #e0e0e0;
+                border: 2px solid #d4e8f7;
+                box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.05);
             }
+
             .number-display span {
                 display: inline-block;
                 transition: all 0.5s ease;
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             .number-display span.first {
                 color: var(--highlight-first);
             }
+
             .number-display span.middle {
                 color: var(--highlight-middle);
             }
+
             .number-display span.last-even {
                 color: var(--highlight-last-even);
             }
+
             .number-display span.last-odd {
                 color: var(--highlight-last-odd);
             }
+
             .explanation {
-                font-size: 0.95rem;
+                font-size: 1rem;
                 line-height: 1.6;
-                background-color: var(--primary-color);
-                color: #0f172a; /* Darker text on light blue */
+                background-color: #e0f2f1;
+                color: #004d40;
                 padding: 1rem;
-                border-radius: 8px;
+                border-radius: 20px;
                 flex-grow: 1;
+                border: 2px dashed #a7d8d4;
             }
 
             /* --- Mã Responsive cho điện thoại --- */
@@ -150,30 +193,37 @@
                 body {
                     padding: 1rem;
                 }
+
                 .grid {
                     grid-template-columns: 1fr;
                     gap: 1.5rem;
                 }
+
                 .controls {
                     flex-direction: column;
                     gap: 0.8rem;
                     padding: 1rem;
                 }
+
                 h1.main-title {
-                    font-size: 1.8rem;
+                    font-size: 2.2rem;
                 }
+
                 h1.main-title + p {
                     margin-bottom: 1.5rem;
                     font-size: 1rem;
                 }
+
                 .section-title {
-                    font-size: 1.6rem;
+                    font-size: 1.8rem;
                 }
+
                 .card h3 {
                     font-size: 1.3rem;
                 }
+
                 .number-display {
-                    font-size: 2rem;
+                    font-size: 2.5rem;
                     letter-spacing: 3px;
                 }
             }
